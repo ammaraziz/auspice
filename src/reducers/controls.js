@@ -79,7 +79,8 @@ export const getDefaultControlsState = () => {
     zoomMax: undefined,
     branchLengthsToDisplay: "divAndDate",
     sidebarOpen: initialSidebarState.sidebarOpen,
-    showOnlyPanels: false
+    showOnlyPanels: false,
+    alwaysDisplayLabels: false
   };
 };
 
@@ -255,6 +256,10 @@ const Controls = (state = getDefaultControlsState(), action) => {
         state.coloringsPresentOnTree.add(colorBy);
       }
       return Object.assign({}, state, {coloringsPresentOnTree: state.coloringsPresentOnTree});
+    case types.ALWAYS_DISPLAY_LABELS:
+      return Object.assign({}, state, {
+        alwaysDisplayLabels: action.value
+      });
     default:
       return state;
   }

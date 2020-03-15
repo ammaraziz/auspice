@@ -15,7 +15,7 @@ export const updateTipLabels = function updateTipLabels(dt) {
     .filter((d) => d.terminal)
     .filter((d) => d.inView);
   // console.log(`there are ${inViewTerminalNodes.length} nodes in view`)
-  if (inViewTerminalNodes.length < this.params.tipLabelBreakL1) {
+  if (inViewTerminalNodes.length < this.params.tipLabelBreakL1 || true) {
 
     let fontSize = this.params.tipLabelFontSizeL1;
     if (inViewTerminalNodes.length < this.params.tipLabelBreakL2) {

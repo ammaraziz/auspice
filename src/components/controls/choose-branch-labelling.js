@@ -1,12 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
-import { CHANGE_BRANCH_LABEL } from "../../actions/types";
+import { CHANGE_BRANCH_LABEL, ALWAYS_DISPLAY_LABELS } from "../../actions/types";
 import { SidebarSubtitle } from "./styles";
 import { controlsWidth } from "../../util/globals";
+import Toggle from "./toggle";
 
 @connect((state) => ({
   selected: state.controls.selectedBranchLabel,
+  alwaysDisplayLabels: state.controls.alwaysDisplayLabels,
   available: state.tree.availableBranchLabels
 }))
 class ChooseBranchLabelling extends React.Component {
@@ -14,6 +16,11 @@ class ChooseBranchLabelling extends React.Component {
     super(props);
     this.change = (value) => {this.props.dispatch({type: CHANGE_BRANCH_LABEL, value: value.value});};
   }
+
+  toggleAlwaysDisplayLabels = () => (
+    this.props.dispatch({type: ALWAYS_DISPLAY_LABELS, value: !this.props.alwaysDisplayLabels})
+  )
+
   render() {
     return (
       <div style={{paddingTop: 5}}>
@@ -30,6 +37,18 @@ class ChooseBranchLabelling extends React.Component {
             onChange={this.change}
           />
         </div>
+        {this.props.showTreeToo ?
+          null : (
+            <div style={{margin: 5}}>
+              <Toggle
+                display={this.props.available.length > 1}
+                on={this.props.alwaysDisplayLabels}
+                callback={this.toggleAlwaysDisplayLabels}
+                label="Always display labels"
+              />
+            </div>
+          )
+        }
       </div>
     );
   }
