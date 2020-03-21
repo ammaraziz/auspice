@@ -37,18 +37,13 @@ class ChooseBranchLabelling extends React.Component {
             onChange={this.change}
           />
         </div>
-        {this.props.showTreeToo ?
-          null : (
-            <div style={{margin: 5}}>
-              <Toggle
-                display={this.props.available.length > 1}
-                on={this.props.alwaysDisplayLabels}
-                callback={this.toggleAlwaysDisplayLabels}
-                label="Always display labels"
-              />
-            </div>
-          )
-        }
+        <Toggle
+          style={{margin: 5}}
+          display={this.props.available.length > 1}
+          on={this.props.alwaysDisplayLabels}
+          callback={this.toggleAlwaysDisplayLabels}
+          label="Always display tip labels"
+        />
       </div>
     );
   }
