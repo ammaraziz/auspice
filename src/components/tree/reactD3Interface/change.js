@@ -70,6 +70,11 @@ export const changePhyloTreeViaPropsComparison = (mainTree, phylotree, oldProps,
     args.newLayout = newProps.layout;
   }
 
+  /* if force-display tip label control is toggled, re-render tree labels */
+  if (oldProps.alwaysDisplayTipLabels !== newProps.alwaysDisplayTipLabels) {
+    phylotree.updateTipLabels(newProps.alwaysDisplayTipLabels);
+  }
+
   /* zoom to a clade / reset zoom to entire tree */
   if (oldTreeRedux.idxOfInViewRootNode !== newTreeRedux.idxOfInViewRootNode) {
     const rootNode = phylotree.nodes[newTreeRedux.idxOfInViewRootNode];

@@ -1,7 +1,7 @@
 import { timerFlush } from "d3-timer";
 import { NODE_VISIBLE } from "../../../util/globals";
 
-export const updateTipLabels = function updateTipLabels(dt) {
+export const updateTipLabels = function updateTipLabels(alwaysDisplayTipLabels, dt) {
   if ("tipLabels" in this.groups) {
     this.groups.tipLabels.selectAll("*").remove();
   } else {
@@ -14,9 +14,8 @@ export const updateTipLabels = function updateTipLabels(dt) {
   const inViewTerminalNodes = this.nodes
     .filter((d) => d.terminal)
     .filter((d) => d.inView);
-  // console.log(`there are ${inViewTerminalNodes.length} nodes in view`)
-  if (inViewTerminalNodes.length < this.params.tipLabelBreakL1 || true) {
-
+    // console.log(`there are ${inViewTerminalNodes.length} nodes in view`)
+  if (inViewTerminalNodes.length < this.params.tipLabelBreakL1 || alwaysDisplayTipLabels) {
     let fontSize = this.params.tipLabelFontSizeL1;
     if (inViewTerminalNodes.length < this.params.tipLabelBreakL2) {
       fontSize = this.params.tipLabelFontSizeL2;
