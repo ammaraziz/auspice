@@ -1,14 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
-import { CHANGE_BRANCH_LABEL, ALWAYS_DISPLAY_LABELS } from "../../actions/types";
+import { CHANGE_BRANCH_LABEL, ALWAYS_DISPLAY_TIP_LABELS } from "../../actions/types";
 import { SidebarSubtitle } from "./styles";
 import { controlsWidth } from "../../util/globals";
 import Toggle from "./toggle";
 
 @connect((state) => ({
   selected: state.controls.selectedBranchLabel,
-  alwaysDisplayLabels: state.controls.alwaysDisplayLabels,
+  alwaysDisplayTipLabels: state.controls.alwaysDisplayTipLabels,
   available: state.tree.availableBranchLabels
 }))
 class ChooseBranchLabelling extends React.Component {
@@ -17,8 +17,8 @@ class ChooseBranchLabelling extends React.Component {
     this.change = (value) => {this.props.dispatch({type: CHANGE_BRANCH_LABEL, value: value.value});};
   }
 
-  toggleAlwaysDisplayLabels = () => (
-    this.props.dispatch({type: ALWAYS_DISPLAY_LABELS, value: !this.props.alwaysDisplayLabels})
+  togglealwaysDisplayTipLabels = () => (
+    this.props.dispatch({type: ALWAYS_DISPLAY_TIP_LABELS, value: !this.props.alwaysDisplayTipLabels})
   )
 
   render() {
@@ -40,8 +40,8 @@ class ChooseBranchLabelling extends React.Component {
         <Toggle
           style={{margin: 5}}
           display={this.props.available.length > 1}
-          on={this.props.alwaysDisplayLabels}
-          callback={this.toggleAlwaysDisplayLabels}
+          on={this.props.alwaysDisplayTipLabels}
+          callback={this.togglealwaysDisplayTipLabels}
           label="Always display tip labels"
         />
       </div>

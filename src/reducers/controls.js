@@ -80,7 +80,7 @@ export const getDefaultControlsState = () => {
     branchLengthsToDisplay: "divAndDate",
     sidebarOpen: initialSidebarState.sidebarOpen,
     showOnlyPanels: false,
-    alwaysDisplayLabels: false
+    alwaysDisplayTipLabels: false
   };
 };
 
@@ -256,9 +256,9 @@ const Controls = (state = getDefaultControlsState(), action) => {
         state.coloringsPresentOnTree.add(colorBy);
       }
       return Object.assign({}, state, {coloringsPresentOnTree: state.coloringsPresentOnTree});
-    case types.ALWAYS_DISPLAY_LABELS:
+    case types.ALWAYS_DISPLAY_TIP_LABELS:
       return Object.assign({}, state, {
-        alwaysDisplayLabels: action.value
+        alwaysDisplayTipLabels: action.value
       });
     default:
       return state;
