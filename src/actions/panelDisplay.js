@@ -1,4 +1,17 @@
+import { intersection } from "lodash";
 import { TOGGLE_PANEL_DISPLAY } from "./types";
+
+/**
+ * Determines if there are multiple "grid" panels in the provided
+ * `panelsToDisplay`. Currently this only checks for the "tree" and "map"
+ * panels, but this paves the way to add more "grid" panels.
+ * @param {Array<string>} panelsToDisplay
+ * @returns {boolean}
+ */
+export const hasMultipleGridPanels = (panelsToDisplay) => {
+  const gridPanels = ["tree", "map"];
+  return intersection(panelsToDisplay, gridPanels).length > 1;
+};
 
 export const togglePanelDisplay = (panelName) => (dispatch, getState) => {
   const { controls } = getState();
@@ -12,9 +25,6 @@ export const togglePanelDisplay = (panelName) => (dispatch, getState) => {
     panelsToDisplay = controls.panelsToDisplay.slice();
     panelsToDisplay.splice(idx, 1);
   }
-  let panelLayout = controls.panelLayout;
-  if (panelsToDisplay.indexOf("tree") === -1 || panelsToDisplay.indexOf("map") === -1) {
-    panelLayout = "full";
-  }
+  const panelLayout = hasMultipleGridPanels(panelsToDisplay) ? controls.panelLayout : "full";
   dispatch({type: TOGGLE_PANEL_DISPLAY, panelsToDisplay, panelLayout});
 };
