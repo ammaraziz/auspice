@@ -82,3 +82,5 @@ done
 
 
 echo "The local data directory ./data now contains a selection of up-to-date datasets from http://data.nextstrain.org"
+
+curl https://nextstrain-scratch.s3.amazonaws.com/dev_multi_h3n2.json --compressed -o data/test-multiple-subtrees.json
