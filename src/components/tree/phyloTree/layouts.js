@@ -247,13 +247,13 @@ export const setDistance = function setDistance(distanceAttribute) {
   if (this.distance === "div") {
     this.nodes.forEach((d) => {
       d.depth = getDivFromNode(d.n);
-      d.pDepth = getDivFromNode(d.n.parent);
+      d.pDepth = getDivFromNode(d.n.parentInfo.major || d.n.parent);
       d.conf = [d.depth, d.depth]; // TO DO - shouldn't be needed, never have div confidence...
     });
   } else {
     this.nodes.forEach((d) => {
       d.depth = getTraitFromNode(d.n, "num_date");
-      d.pDepth = getTraitFromNode(d.n.parent, "num_date");
+      d.pDepth = getTraitFromNode(d.n.parentInfo.major || d.n.parent, "num_date");
       d.conf = getTraitFromNode(d.n, "num_date", {confidence: true}) || [d.depth, d.depth];
     });
   }

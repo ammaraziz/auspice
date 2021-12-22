@@ -313,6 +313,8 @@ const _resetExpodedTree = (nodes) => {
         child.parent = n;
       }
     }
+    // see corresponding function `addParentInfo`
+    n.parentInfo = {};
   });
 };
 
@@ -344,6 +346,7 @@ const _traverseAndCreateSubtrees = (root, node, attr) => {
           const subtreeRootNode = node.children[idx];
           root.children.push(subtreeRootNode);
           subtreeRootNode.parent = root;
+          subtreeRootNode.parentInfo.major = node;
         });
         node.unexplodedChildren = originalChildren;
         node.children = node.children.filter((c, idx) => {
