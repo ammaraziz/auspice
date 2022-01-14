@@ -2,14 +2,12 @@ import { intersection } from "lodash";
 import { TOGGLE_PANEL_DISPLAY } from "./types";
 
 /**
- * Determines if there are multiple "grid" panels in the provided
- * `panelsToDisplay`. Currently this only checks for the "tree" and "map"
- * panels, but this paves the way to add more "grid" panels.
+ * Determines if there are multiple "grid" panels in the provided `panelsToDisplay`.
  * @param {Array<string>} panelsToDisplay
  * @returns {boolean}
  */
 export const hasMultipleGridPanels = (panelsToDisplay) => {
-  const gridPanels = ["tree", "map"];
+  const gridPanels = ["tree", "map", "multiplot"];
   return intersection(panelsToDisplay, gridPanels).length > 1;
 };
 

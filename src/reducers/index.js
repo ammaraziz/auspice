@@ -10,6 +10,7 @@ import narrative from "./narrative";
 import treeToo from "./treeToo";
 import general from "./general";
 import jsonCache from "./jsonCache";
+import multiplot from "./multiplot";
 
 const rootReducer = combineReducers({
   metadata,
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   narrative,
   treeToo,
   general,
-  jsonCache
+  jsonCache,
+  multiplot
 });
 
 export default rootReducer;

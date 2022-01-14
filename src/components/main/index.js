@@ -26,6 +26,7 @@ import MobileNarrativeDisplay from "../narrative/MobileNarrativeDisplay";
 
 const Entropy = lazy(() => import("../entropy"));
 const Frequencies = lazy(() => import("../frequencies"));
+const Multiplot = lazy(() => import("../multiplot"));
 
 
 @connect((state) => ({
@@ -41,7 +42,8 @@ const Frequencies = lazy(() => import("../frequencies"));
   sidebarOpen: state.controls.sidebarOpen,
   showOnlyPanels: state.controls.showOnlyPanels,
   treeName: state.tree.name,
-  secondTreeName: state.controls.showTreeToo
+  secondTreeName: state.controls.showTreeToo,
+  multiplotLoaded: state.multiplot.loaded
 }))
 class Main extends React.Component {
   constructor(props) {
@@ -146,6 +148,10 @@ class Main extends React.Component {
           }
           {this.props.displayNarrative || this.props.showOnlyPanels ? null : <Info width={calcUsableWidth(availableWidth, 1)} />}
           {this.props.panelsToDisplay.includes("tree") ? <Tree width={big.width} height={big.height} key={keyName} /> : null}
+          {this.props.panelsToDisplay.includes("multiplot") && this.props.multiplotLoaded
+            ? <Suspense fallback={null}><Multiplot width={big.width} height={big.height} key={keyName+"_multiplot"} showLegend={this.shouldShowMapLegend()}/></Suspense>
+            : null
+          }
           {this.props.panelsToDisplay.includes("map") ? <Map width={big.width} height={big.height} key={keyName+"_map"} justGotNewDatasetRenderNewMap={false} legend={this.shouldShowMapLegend()} /> : null}
           {this.props.panelsToDisplay.includes("entropy") ?
             (<Suspense fallback={null}>
