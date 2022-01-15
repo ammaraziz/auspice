@@ -105,7 +105,7 @@ export const getMeasurementDOMId = (row) => {
   return `multiplot_meaurement_${row.multiplotId}`;
 };
 
-export const drawMultiplotD3SVG = (ref, dataGroups, plotLayout, xAxisLabel, threshold, showThreshold, setHoverData) => {
+export const drawMultiplotD3SVG = (ref, dataGroups, plotLayout, xAxisLabel, threshold, setHoverData) => {
   const { xScale, yScale, presets, width } = plotLayout;
 
   // Start fresh by removing everything in SVG
@@ -115,6 +115,20 @@ export const drawMultiplotD3SVG = (ref, dataGroups, plotLayout, xAxisLabel, thre
   const totalSubplotHeight = (presets.subplotHeight * dataGroups.length);
   // Set the overall height for the SVG
   svg.attr("height", totalSubplotHeight + presets.topPadding + presets.bottomPadding);
+
+  // Add threshold if provided
+  if (threshold !== null) {
+    const thresholdXValue = xScale(threshold);
+    svg.append("line")
+      .attr("id", "multiplotThreshold")
+      .attr("x1", thresholdXValue)
+      .attr("x2", thresholdXValue)
+      .attr("y1", presets.topPadding)
+      .attr("y2", totalSubplotHeight + presets.topPadding)
+      .attr("stroke-width", 2)
+      .attr("stroke", "#DDD")
+      .attr("display", "none");
+  }
 
   // Add x axis to the bottom of the SVG
   svg.append("g")
@@ -182,24 +196,8 @@ export const drawMultiplotD3SVG = (ref, dataGroups, plotLayout, xAxisLabel, thre
           // sets hover data state to null to hide the hover panel display
           setHoverData(null);
         });
+
   });
-
-  // Add threshold if provided
-  if (threshold !== null) {
-    const thresholdXValue = xScale(threshold);
-    const thresholdLine = svg.append("line")
-      .attr("id", "multiplotThreshold")
-      .attr("x1", thresholdXValue)
-      .attr("x2", thresholdXValue)
-      .attr("y1", presets.topPadding)
-      .attr("y2", totalSubplotHeight + presets.topPadding)
-      .attr("stroke-width", 2)
-      .attr("stroke", "#DDD");
-
-    if (!showThreshold) {
-      thresholdLine.attr("display", "none");
-    }
-  }
 };
 
 export const colorMultiplotD3SVG = (ref, treeStrainColors) => {
@@ -215,4 +213,11 @@ export const getMultiplotTitle = (title, groupByTitle) => {
     panelTitle += ` grouped by ${groupByTitle}`;
   }
   return panelTitle;
+};
+
+export const toggleThreshold = (ref, showThreshold) => {
+  const displayAttr = showThreshold ? null : "none";
+  select(ref)
+    .select("#multiplotThreshold")
+      .attr("display", displayAttr);
 };

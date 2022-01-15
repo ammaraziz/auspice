@@ -300,6 +300,8 @@ const Controls = (state = getDefaultControlsState(), action) => {
       return {...state, ...action.controls};
     case types.CHANGE_MULTIPLOT_GROUP_BY:
       return {...state, multiplotGroupByKey: action.multiplotGroupByKey};
+    case types.TOGGLE_MULTIPLOT_THRESHOLD:
+      return {...state, multiplotShowThreshold: action.multiplotShowThreshold};
     default:
       return state;
   }

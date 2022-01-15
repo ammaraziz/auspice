@@ -1,9 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select/lib/Select";
-import { changeMultiplotCollection, changeMultiplotGroupBy } from "../../actions/multiplot";
+import { changeMultiplotCollection, changeMultiplotGroupBy, toggleMultiplotThreshold } from "../../actions/multiplot";
 import { controlsWidth } from "../../util/globals";
 import { SidebarSubtitle } from "./styles";
+import Toggle from "./toggle";
 
 /**
  * Converts an array of option objects to an array of react-select options.
@@ -26,7 +27,8 @@ const MultiplotOptions = () => {
   const collectionToDisplay = useSelector((state) => state.controls.multiplotCollectionKey);
   const groupings = useSelector((state) => state.controls.multiplotGroupings);
   const groupBy = useSelector((state) => state.controls.multiplotGroupByKey);
-
+  const showThreshold = useSelector((state) => state.controls.multiplotShowThreshold);
+  const threshold = useSelector((state) => state.multiplot.collectionToDisplay.threshold);
 
   // Create array of objects expected for the react-select library
   const collectionSelectOptions = createKeyTitleSelectOptions(collectionOptions);
@@ -68,6 +70,12 @@ const MultiplotOptions = () => {
           }}
         />
       </div>
+      <Toggle
+        display={threshold !== null && threshold !== undefined}
+        on={showThreshold}
+        label="Show measurement threshold"
+        callback={() => dispatch(toggleMultiplotThreshold(!showThreshold))}
+      />
     </div>
   );
 };

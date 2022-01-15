@@ -14,7 +14,8 @@ import {
   getCleanSVG,
   colorMultiplotD3SVG,
   getMultiplotTitle,
-  getMeasurementDOMId
+  getMeasurementDOMId,
+  toggleThreshold
 } from "./utils";
 
 const useDeepCompareMemo = (value) => {
@@ -53,7 +54,7 @@ const Multiplot = ({height, width, showLegend}) => {
     // Create multiplot SVG if we have any grouped data
     if (groupedMeasurements && groupedMeasurements.length > 0) {
       const { x_axis_label, threshold } = collection;
-      drawMultiplotD3SVG(d3Ref.current, groupedMeasurements, plotLayout, x_axis_label, threshold, showThreshold, setHoverData);
+      drawMultiplotD3SVG(d3Ref.current, groupedMeasurements, plotLayout, x_axis_label, threshold, setHoverData);
     } else {
       // If no data is available, clear the SVG
       getCleanSVG(d3Ref.current);
@@ -67,6 +68,12 @@ const Multiplot = ({height, width, showLegend}) => {
       colorMultiplotD3SVG(d3Ref.current, treeStrainColors);
     }
   }, [width, groupedMeasurements, treeStrainColors]);
+
+  useDeepCompareEffect(() => {
+    if (groupMeasurements && groupedMeasurements.length > 0) {
+      toggleThreshold(d3Ref.current, showThreshold);
+    }
+  }, [width, groupedMeasurements, showThreshold]);
 
   const getSVGContainerStyle = () => {
     return {

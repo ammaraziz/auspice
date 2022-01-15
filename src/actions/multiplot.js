@@ -1,7 +1,8 @@
 import {
   CHANGE_MULTIPLOT_COLLECTION,
   CHANGE_MULTIPLOT_GROUP_BY,
-  LOAD_MULTIPLOT_COLLECTIONS
+  LOAD_MULTIPLOT_COLLECTIONS,
+  TOGGLE_MULTIPLOT_THRESHOLD
 } from "./types";
 
 /**
@@ -119,5 +120,12 @@ export const changeMultiplotGroupBy = (newGroupByKey) => (dispatch) => {
   dispatch({
     type: CHANGE_MULTIPLOT_GROUP_BY,
     multiplotGroupByKey: newGroupByKey
+  });
+};
+
+export const toggleMultiplotThreshold = (showThreshold) => (dispatch) => {
+  dispatch({
+    type: TOGGLE_MULTIPLOT_THRESHOLD,
+    multiplotShowThreshold: showThreshold
   });
 };
