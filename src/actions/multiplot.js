@@ -1,4 +1,8 @@
-import { CHANGE_MULTIPLOT_COLLECTION, LOAD_MULTIPLOT_COLLECTIONS } from "./types";
+import {
+  CHANGE_MULTIPLOT_COLLECTION,
+  CHANGE_MULTIPLOT_GROUP_BY,
+  LOAD_MULTIPLOT_COLLECTIONS
+} from "./types";
 
 /**
  * Find the collection within collections that has a key matching the provided
@@ -108,5 +112,12 @@ export const changeMultiplotCollection = (newCollectionKey) => (dispatch, getSta
     type: CHANGE_MULTIPLOT_COLLECTION,
     collectionToDisplay,
     controls: {...getCollectionDisplayControls(collectionToDisplay)}
+  });
+};
+
+export const changeMultiplotGroupBy = (newGroupByKey) => (dispatch) => {
+  dispatch({
+    type: CHANGE_MULTIPLOT_GROUP_BY,
+    multiplotGroupByKey: newGroupByKey
   });
 };

@@ -298,6 +298,8 @@ const Controls = (state = getDefaultControlsState(), action) => {
     case types.LOAD_MULTIPLOT_COLLECTIONS: /* fallthrough */
     case types.CHANGE_MULTIPLOT_COLLECTION:
       return {...state, ...action.controls};
+    case types.CHANGE_MULTIPLOT_GROUP_BY:
+      return {...state, multiplotGroupByKey: action.multiplotGroupByKey};
     default:
       return state;
   }
