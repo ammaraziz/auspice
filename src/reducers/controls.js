@@ -88,7 +88,12 @@ export const getDefaultControlsState = () => {
     mapLegendOpen: undefined,
     showOnlyPanels: false,
     showTransmissionLines: true,
-    normalizeFrequencies: true
+    normalizeFrequencies: true,
+    multiplotCollectionOptions: new Map(),
+    multiplotCollectionKey: undefined,
+    multiplotGroupings: new Map(),
+    multiplotGroupByKey: undefined,
+    multiplotShowThreshold: false
   };
 };
 
@@ -290,6 +295,8 @@ const Controls = (state = getDefaultControlsState(), action) => {
       }
       return state;
     }
+    case types.LOAD_MULTIPLOT_COLLECTIONS:
+      return {...state, ...action.controls};
     default:
       return state;
   }
