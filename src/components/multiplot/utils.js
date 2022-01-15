@@ -42,7 +42,8 @@ export const getPlotLayout = (data, width) => {
     bottomPadding: 50,
     subplotHeight: 100,
     subplotPadding: 20,
-    circleRadius: 3
+    circleRadius: 3,
+    circleHoverRadius: 5
   };
 
   // Create x scale shared by all subplots
@@ -104,7 +105,7 @@ export const getMeasurementDOMId = (row) => {
   return `multiplot_meaurement_${row.multiplotId}`;
 };
 
-export const drawMultiplotD3SVG = (ref, dataGroups, plotLayout, xAxisLabel, threshold, showThreshold) => {
+export const drawMultiplotD3SVG = (ref, dataGroups, plotLayout, xAxisLabel, threshold, showThreshold, setHoverData) => {
   const { xScale, yScale, presets, width } = plotLayout;
 
   // Start fresh by removing everything in SVG
@@ -166,7 +167,21 @@ export const drawMultiplotD3SVG = (ref, dataGroups, plotLayout, xAxisLabel, thre
         .attr("id", (d) => getMeasurementDOMId(d))
         .attr("cx", (d) => xScale(d.value))
         .attr("cy", (d) => yScale(d.multiplotJitter))
-        .attr("r", presets.circleRadius);
+        .attr("r", presets.circleRadius)
+        .on("mouseover", (d, i, elements) => {
+          select(elements[i]).transition()
+            .duration("100")
+            .attr("r", presets.circleHoverRadius);
+          // sets hover data state to trigger the hover panel display
+          setHoverData(d);
+        })
+        .on("mouseout", (_, i, elements) => {
+          select(elements[i]).transition()
+            .duration("200")
+            .attr("r", presets.circleRadius);
+          // sets hover data state to null to hide the hover panel display
+          setHoverData(null);
+        });
   });
 
   // Add threshold if provided

@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { isEqual } from "lodash";
 import ErrorBoundary from "../../util/errorBoundry";
 import Card from "../framework/card";
 import Legend from "../tree/legend/legend";
+import { HoverPanel } from "./hoverPanel";
 import {
   treeStrainPropertySelector,
   getPlotLayout,
@@ -12,7 +13,8 @@ import {
   drawMultiplotD3SVG,
   getCleanSVG,
   colorMultiplotD3SVG,
-  getMultiplotTitle
+  getMultiplotTitle,
+  getMeasurementDOMId
 } from "./utils";
 
 const useDeepCompareMemo = (value) => {
@@ -39,6 +41,7 @@ const Multiplot = ({height, width, showLegend}) => {
   const showThreshold = useSelector((state) => state.controls.multiplotShowThreshold);
   const collection = useSelector((state) => state.multiplot.collectionToDisplay, isEqual);
 
+  const [hoverData, setHoverData] = useState(null);
   const d3Ref = useRef(null);
 
   const plotLayout = getPlotLayout(collection.measurements, width);
@@ -50,7 +53,7 @@ const Multiplot = ({height, width, showLegend}) => {
     // Create multiplot SVG if we have any grouped data
     if (groupedMeasurements && groupedMeasurements.length > 0) {
       const { x_axis_label, threshold } = collection;
-      drawMultiplotD3SVG(d3Ref.current, groupedMeasurements, plotLayout, x_axis_label, threshold, showThreshold);
+      drawMultiplotD3SVG(d3Ref.current, groupedMeasurements, plotLayout, x_axis_label, threshold, showThreshold, setHoverData);
     } else {
       // If no data is available, clear the SVG
       getCleanSVG(d3Ref.current);
@@ -74,6 +77,7 @@ const Multiplot = ({height, width, showLegend}) => {
     };
   };
 
+  const svgContainerId = "multiplotSVGContainer";
   return (
     <Card title={getMultiplotTitle(collection.title, groupByTitle)}>
       {showLegend &&
@@ -81,7 +85,10 @@ const Multiplot = ({height, width, showLegend}) => {
           <Legend right width={width}/>
         </ErrorBoundary>
       }
-      <div id="multiplotSVGContainer" style={getSVGContainerStyle()}>
+      <div id={svgContainerId} style={getSVGContainerStyle()}>
+        {hoverData &&
+          <HoverPanel data={hoverData} elementId={getMeasurementDOMId(hoverData)} containerDivId={svgContainerId}/>
+        }
         <svg
           id="d3multiplotSVG"
           width="100%"
