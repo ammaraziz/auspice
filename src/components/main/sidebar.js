@@ -27,6 +27,7 @@ export const Sidebar = (
             mobileDisplay={mobileDisplay}
             mapOn={panelsToDisplay.includes("map")}
             frequenciesOn={panelsToDisplay.includes("frequencies")}
+            multiplotOn={panelsToDisplay.includes("multiplot")}
           />
         )}
       </SidebarContainer>

@@ -41,3 +41,9 @@ export const FrequencyInfo = (
     This option is not available when data is limited to prevent numerical issues.
   </>
 );
+
+export const MultiplotOptionsInfo = (
+  <>
+    Change multiplot collection and various display options for the collection.
+  </>
+);

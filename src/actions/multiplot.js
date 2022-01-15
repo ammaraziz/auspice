@@ -1,4 +1,4 @@
-import { LOAD_MULTIPLOT_COLLECTIONS } from "./types";
+import { CHANGE_MULTIPLOT_COLLECTION, LOAD_MULTIPLOT_COLLECTIONS } from "./types";
 
 /**
  * Find the collection within collections that has a key matching the provided
@@ -97,5 +97,16 @@ export const loadMultiplotCollections = (json) => (dispatch, getState) => {
     collections,
     collectionToDisplay,
     controls: {...getCollectionDisplayControls(collectionToDisplay), multiplotCollectionOptions}
+  });
+};
+
+export const changeMultiplotCollection = (newCollectionKey) => (dispatch, getState) => {
+  const { multiplot } = getState();
+  const collectionToDisplay = getCollectionToDisplay(multiplot.collections, newCollectionKey);
+
+  dispatch({
+    type: CHANGE_MULTIPLOT_COLLECTION,
+    collectionToDisplay,
+    controls: {...getCollectionDisplayControls(collectionToDisplay)}
   });
 };

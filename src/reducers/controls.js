@@ -295,7 +295,8 @@ const Controls = (state = getDefaultControlsState(), action) => {
       }
       return state;
     }
-    case types.LOAD_MULTIPLOT_COLLECTIONS:
+    case types.LOAD_MULTIPLOT_COLLECTIONS: /* fallthrough */
+    case types.CHANGE_MULTIPLOT_COLLECTION:
       return {...state, ...action.controls};
     default:
       return state;

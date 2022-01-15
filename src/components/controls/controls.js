@@ -20,10 +20,11 @@ import ToggleTangle from "./toggle-tangle";
 import Language from "./language";
 import { ControlsContainer } from "./styles";
 import FilterData, {FilterInfo} from "./filter";
-import {TreeOptionsInfo, MapOptionsInfo, AnimationOptionsInfo, PanelOptionsInfo, FrequencyInfo} from "./miscInfoText";
+import {TreeOptionsInfo, MapOptionsInfo, AnimationOptionsInfo, PanelOptionsInfo, FrequencyInfo, MultiplotOptionsInfo} from "./miscInfoText";
 import { AnnotatedHeader } from "./annotatedHeader";
+import MultiplotOptions from "./multiplotOptions";
 
-function Controls({mapOn, frequenciesOn, mobileDisplay}) {
+function Controls({mapOn, frequenciesOn, multiplotOn, mobileDisplay}) {
   const { t } = useTranslation();
 
   return (
@@ -47,6 +48,13 @@ function Controls({mapOn, frequenciesOn, mobileDisplay}) {
       <ChooseTipLabel />
       <ChooseSecondTree />
       <ToggleTangle />
+
+      {multiplotOn ? (
+        <span style={{ marginTop: "10px" }}>
+          <AnnotatedHeader title={t("sidebar:Multiplot Options")} tooltip={MultiplotOptionsInfo} mobile={mobileDisplay}/>
+          <MultiplotOptions />
+        </span>
+      ) : null}
 
       {mapOn ? (
         <span style={{ marginTop: "10px" }}>

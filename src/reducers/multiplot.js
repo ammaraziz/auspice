@@ -1,4 +1,4 @@
-import { LOAD_MULTIPLOT_COLLECTIONS } from "../actions/types";
+import { LOAD_MULTIPLOT_COLLECTIONS, CHANGE_MULTIPLOT_COLLECTION } from "../actions/types";
 
 const getDefaultMultiplotState = () => ({
   loaded: false,
@@ -13,6 +13,12 @@ const multiplot = (state = getDefaultMultiplotState(), action) => {
         ...state,
         loaded: true,
         collections: action.collections,
+        collectionToDisplay: action.collectionToDisplay
+      };
+    case CHANGE_MULTIPLOT_COLLECTION:
+      return {
+        ...state,
+        loaded: true,
         collectionToDisplay: action.collectionToDisplay
       };
     default:
