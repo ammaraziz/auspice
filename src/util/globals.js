@@ -247,3 +247,19 @@ const aminoAcids = {
 };
 
 export const getAminoAcidName = (x) => aminoAcids[x.toUpperCase()] || "Unknown";
+
+/**
+ * Truncates provided str to the provided truncateLength.
+ * Adds ellipsis to the truncated string by default.
+ * The original str is returned if it is shorter than the truncateLength.
+ * @param {string} str
+ * @param {number} truncateLength
+ * @param {boolean} addEllipsis
+ * @returns {string}
+ */
+export const truncateString = (str, truncateLength, addEllipsis = true) => {
+  if (str.length > truncateLength) {
+    return str.substring(0, truncateLength - 1) + (addEllipsis ? "..." : "");
+  }
+  return str;
+};

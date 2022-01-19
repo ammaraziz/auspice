@@ -3,7 +3,8 @@ import { LOAD_MULTIPLOT_COLLECTIONS, CHANGE_MULTIPLOT_COLLECTION } from "../acti
 const getDefaultMultiplotState = () => ({
   loaded: false,
   collections: [],
-  collectionToDisplay: {}
+  collectionToDisplay: {},
+  collectionFieldValues: {}
 });
 
 const multiplot = (state = getDefaultMultiplotState(), action) => {
@@ -13,7 +14,8 @@ const multiplot = (state = getDefaultMultiplotState(), action) => {
         ...state,
         loaded: true,
         collections: action.collections,
-        collectionToDisplay: action.collectionToDisplay
+        collectionToDisplay: action.collectionToDisplay,
+        collectionFieldValues: action.collectionFieldValues
       };
     case CHANGE_MULTIPLOT_COLLECTION:
       return {

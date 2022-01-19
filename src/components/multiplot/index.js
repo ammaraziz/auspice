@@ -5,10 +5,11 @@ import ErrorBoundary from "../../util/errorBoundry";
 import Card from "../framework/card";
 import Legend from "../tree/legend/legend";
 import { HoverPanel } from "./hoverPanel";
+import { FilterSummary } from "./filtersSummary";
 import {
   treeStrainPropertySelector,
   getPlotLayout,
-  filterToTreeVisibleStrains,
+  filterMeasurements,
   groupMeasurements,
   drawMultiplotD3SVG,
   getCleanSVG,
@@ -38,7 +39,8 @@ const Multiplot = ({height, width, showLegend}) => {
   const treeStrainColors = useSelector((state) => treeStrainPropertySelector(state.tree, "nodeColors"), isEqual);
   const treeStrainVisibility = useSelector((state) => treeStrainPropertySelector(state.tree, "visibility"), isEqual);
   const groupBy = useSelector((state) => state.controls.multiplotGroupByKey);
-  const groupByTitle = useSelector((state) => state.controls.multiplotGroupings.get(groupBy));
+  const groupings = useSelector((state) => state.controls.multiplotGroupings);
+  const filters = useSelector((state) => state.controls.multiplotFilters, isEqual);
   const showThreshold = useSelector((state) => state.controls.multiplotShowThreshold);
   const collection = useSelector((state) => state.multiplot.collectionToDisplay, isEqual);
 
@@ -46,8 +48,8 @@ const Multiplot = ({height, width, showLegend}) => {
   const d3Ref = useRef(null);
 
   const plotLayout = getPlotLayout(collection.measurements, width);
-  const filteredMeasurements = filterToTreeVisibleStrains(collection.measurements, treeStrainVisibility);
-  const groupedMeasurements = groupMeasurements(filteredMeasurements, groupBy);
+  const filteredMeasurements = filterMeasurements(collection.measurements, treeStrainVisibility, filters);
+  const groupedMeasurements = groupMeasurements(filteredMeasurements, groupBy, filters[groupBy]);
 
   // Redraw the SVG if updated grouped measurements or plot layout
   useDeepCompareEffect(() => {
@@ -75,33 +77,44 @@ const Multiplot = ({height, width, showLegend}) => {
     }
   }, [width, groupedMeasurements, showThreshold]);
 
+  const getMultiplotContainerStyle = () => {
+    return {
+      width,
+      height,
+      display: "flex",
+      flexDirection: "column"
+    };
+  };
+
   const getSVGContainerStyle = () => {
     return {
       overflowY: "auto",
-      position: "relative",
-      height: height,
-      width: width
+      position: "relative"
     };
   };
 
   const svgContainerId = "multiplotSVGContainer";
   return (
-    <Card title={getMultiplotTitle(collection.title, groupByTitle)}>
+    <Card title={getMultiplotTitle(collection.title, groupings.get(groupBy))}>
       {showLegend &&
         <ErrorBoundary>
           <Legend right width={width}/>
         </ErrorBoundary>
       }
-      <div id={svgContainerId} style={getSVGContainerStyle()}>
-        {hoverData &&
-          <HoverPanel data={hoverData} elementId={getMeasurementDOMId(hoverData)} containerDivId={svgContainerId}/>
-        }
-        <svg
-          id="d3multiplotSVG"
-          width="100%"
-          ref={d3Ref}
-        />
+      <div id="multiplotContainer" style={getMultiplotContainerStyle()}>
+        <FilterSummary filters={filters} titles={groupings} />
+        <div id={svgContainerId} style={getSVGContainerStyle()}>
+          {hoverData &&
+            <HoverPanel data={hoverData} elementId={getMeasurementDOMId(hoverData)} containerDivId={svgContainerId}/>
+          }
+          <svg
+            id="d3multiplotSVG"
+            width="100%"
+            ref={d3Ref}
+          />
+        </div>
       </div>
+
     </Card>
   );
 };

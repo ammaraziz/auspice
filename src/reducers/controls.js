@@ -93,6 +93,7 @@ export const getDefaultControlsState = () => {
     multiplotCollectionKey: undefined,
     multiplotGroupings: new Map(),
     multiplotGroupByKey: undefined,
+    multiplotFilters: {},
     multiplotShowThreshold: false
   };
 };
@@ -302,6 +303,8 @@ const Controls = (state = getDefaultControlsState(), action) => {
       return {...state, multiplotGroupByKey: action.multiplotGroupByKey};
     case types.TOGGLE_MULTIPLOT_THRESHOLD:
       return {...state, multiplotShowThreshold: action.multiplotShowThreshold};
+    case types.APPLY_MULTIPLOT_FILTER:
+      return {...state, multiplotFilters: action.multiplotFilters};
     default:
       return state;
   }

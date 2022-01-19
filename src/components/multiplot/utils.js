@@ -62,27 +62,57 @@ export const getPlotLayout = (data, width) => {
 };
 
 /**
- * Filters provided measurements to only measurements for strains that are
- * currently visible in the tree. Visibiity is indicated by the NODE_VISIBLE
- * value in the provided treeStrainVisibility object for strains.
+ * Filters provided measurements to measurements for strains that are currently
+ * visible in the tree and that are included in the active filters.
+ *
+ * Visibility is indicated by the NODE_VISIBLE value in the provided
+ * treeStrainVisibility object for strains.
  * @param {Array<Object>} measurements
- * @param {Object<string,number>} treeStrainVisibility
+ * @param {Object<straing, number>} treeStrainVisibility
+ * @param {Object<string, Map>} filters
  * @returns {Array<Object>}
  */
-export const filterToTreeVisibleStrains = (measurements, treeStrainVisibility) => {
+export const filterMeasurements = (measurements, treeStrainVisibility, filters) => {
   // Checks visibility against global NODE_VISIBLE variable
   const isVisible = (visibility) => visibility === NODE_VISIBLE;
-  return measurements.filter((m) => isVisible(treeStrainVisibility[m.strain]));
+  // Only use active filters to filter measurements
+  const activeFilters = {};
+  Object.entries(filters).forEach(([field, valuesMap]) => {
+    activeFilters[field] = activeFilters[field] || [];
+    valuesMap.forEach(({active}, fieldValue) => {
+      if (active) {
+        activeFilters[field].push(fieldValue);
+      }
+    });
+  });
+  return measurements.filter((m) => {
+    // First check the strain is visible in the tree
+    if (!isVisible(treeStrainVisibility[m.strain])) return false;
+    // Then check that it passes all filters in activeFilters
+    for (const [field, values] of Object.entries(activeFilters)) {
+      if (values.length > 0 && !values.includes(m[field])) return false;
+    }
+    return true;
+  });
 };
 
 /**
  * Uses D3.groups to aggregate measurements into an array of groups
+ * If groupByFilters Map is provided, sort the groups by the order of the keys.
  * @param {Array<Object>} measurements
  * @param {string} groupBy
+ * @param {Map} groupByFilters
  * @returns {Array<Object>}
  */
-export const groupMeasurements = (measurements, groupBy) => {
-  return groups(measurements, (d) => d[groupBy]);
+export const groupMeasurements = (measurements, groupBy, groupByFilters) => {
+  const groupedMeasurements = groups(measurements, (d) => d[groupBy]);
+  if (groupByFilters) {
+    const sortOrder = Array.from(groupByFilters.keys());
+    // Sort using a[0] since d3.groups returns a nested array
+    // where the groupBy field value is the first element of each array
+    groupedMeasurements.sort((a, b) => sortOrder.indexOf(a[0]) - sortOrder.indexOf(b[0]));
+  }
+  return groupedMeasurements;
 };
 
 export const getCleanSVG = (ref) => {

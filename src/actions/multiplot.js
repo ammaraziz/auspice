@@ -1,4 +1,5 @@
 import {
+  APPLY_MULTIPLOT_FILTER,
   CHANGE_MULTIPLOT_COLLECTION,
   CHANGE_MULTIPLOT_GROUP_BY,
   LOAD_MULTIPLOT_COLLECTIONS,
@@ -25,6 +26,26 @@ export const getCollectionToDisplay = (collections, collectionKey) => {
     console.error(`Found multiple collections with key ${collectionKey}. Returning the first matching collection only.`);
   }
   return potentialCollections[0];
+};
+
+/**
+ * Create an object of all fields not in ignoredFields and their unique values
+ * for easy filtering later.
+ * @param {Object} collection
+ * @param {Array<string>} ignoredFields
+ * @returns {Object<string, Set>}
+ */
+const getCollectionFieldValues = (collection, ignoredFields = ['value', 'multiplotId', 'multiplotJitter']) => {
+  const fieldValues = {};
+  collection.measurements.forEach((measurement) => {
+    Object.entries(measurement).forEach(([field, value]) => {
+      // Skip ignored fields
+      if (ignoredFields.includes(field)) return;
+      fieldValues[field] = fieldValues[field] || new Set();
+      fieldValues[field].add(value);
+    });
+  });
+  return fieldValues;
 };
 
 /**
@@ -91,6 +112,9 @@ export const loadMultiplotCollections = (json) => (dispatch, getState) => {
   // TODO: consider url query parameter?
   const collectionToDisplay = getCollectionToDisplay(collections, json["default_collection"]);
 
+  // Get the collection's fields and unique values for easy filtering later
+  const collectionFieldValues = getCollectionFieldValues(collectionToDisplay);
+
   // Create map of collections' keys and titles for the control panel
   const multiplotCollectionOptions = new Map();
   collections.forEach((collection) => {
@@ -101,6 +125,7 @@ export const loadMultiplotCollections = (json) => (dispatch, getState) => {
     type: LOAD_MULTIPLOT_COLLECTIONS,
     collections,
     collectionToDisplay,
+    collectionFieldValues,
     controls: {...getCollectionDisplayControls(collectionToDisplay), multiplotCollectionOptions}
   });
 };
@@ -120,6 +145,66 @@ export const changeMultiplotGroupBy = (newGroupByKey) => (dispatch) => {
   dispatch({
     type: CHANGE_MULTIPLOT_GROUP_BY,
     multiplotGroupByKey: newGroupByKey
+  });
+};
+
+export const toggleSingleFilter = (field, value, active) => (dispatch, getState) => {
+  const { controls } = getState();
+  /*
+   * Create a copy of controls.multiplotFilters state then clone the nested Map
+   * to avoid changing the redux state in place.
+   * Tried to use lodash.cloneDeep(), but it did not work for the nested Map
+   * - Jover, 19 January 2022
+   */
+  const multiplotFilters = {...controls.multiplotFilters};
+  multiplotFilters[field] = new Map(multiplotFilters[field]);
+  multiplotFilters[field].set(value, {active});
+
+  dispatch({
+    type: APPLY_MULTIPLOT_FILTER,
+    multiplotFilters
+  });
+};
+
+export const removeSingleFilter = (field, value) => (dispatch, getState) => {
+  const { controls } = getState();
+  const multiplotFilters = {...controls.multiplotFilters};
+  multiplotFilters[field] = new Map(multiplotFilters[field]);
+  multiplotFilters[field].delete(value);
+
+  // If removing the single filter leaves 0 filters for the field, completely
+  // remove the field from the filters state
+  if (multiplotFilters[field].size === 0) {
+    delete multiplotFilters[field];
+  }
+
+  dispatch({
+    type: APPLY_MULTIPLOT_FILTER,
+    multiplotFilters
+  });
+};
+
+export const removeAllFieldFilters = (field) => (dispatch, getState) => {
+  const { controls } = getState();
+  const multiplotFilters = {...controls.multiplotFilters};
+  delete multiplotFilters[field];
+
+  dispatch({
+    type: APPLY_MULTIPLOT_FILTER,
+    multiplotFilters
+  });
+};
+
+export const toggleAllFieldFilters = (field, active) => (dispatch, getState) => {
+  const { controls } = getState();
+  const multiplotFilters = {...controls.multiplotFilters};
+  multiplotFilters[field] = new Map(multiplotFilters[field]);
+  for (const fieldValue of multiplotFilters[field].keys()) {
+    multiplotFilters[field].set(fieldValue, {active});
+  }
+  dispatch({
+    type: APPLY_MULTIPLOT_FILTER,
+    multiplotFilters
   });
 };
 
