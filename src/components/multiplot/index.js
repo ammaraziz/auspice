@@ -16,6 +16,7 @@ import {
   colorMultiplotD3SVG,
   getMultiplotTitle,
   getMeasurementDOMId,
+  toggleOverallMean,
   toggleThreshold
 } from "./utils";
 
@@ -41,6 +42,7 @@ const Multiplot = ({height, width, showLegend}) => {
   const groupBy = useSelector((state) => state.controls.multiplotGroupByKey);
   const groupings = useSelector((state) => state.controls.multiplotGroupings);
   const filters = useSelector((state) => state.controls.multiplotFilters, isEqual);
+  const showOverallMean = useSelector((state) => state.controls.multiplotShowOverallMean);
   const showThreshold = useSelector((state) => state.controls.multiplotShowThreshold);
   const collection = useSelector((state) => state.multiplot.collectionToDisplay, isEqual);
 
@@ -76,6 +78,10 @@ const Multiplot = ({height, width, showLegend}) => {
       toggleThreshold(d3Ref.current, showThreshold);
     }
   }, [width, groupedMeasurements, showThreshold]);
+
+  useDeepCompareEffect(() => {
+    toggleOverallMean(d3Ref.current, showOverallMean);
+  }, [width, groupedMeasurements, showOverallMean]);
 
   const getMultiplotContainerStyle = () => {
     return {

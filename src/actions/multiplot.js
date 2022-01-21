@@ -3,6 +3,7 @@ import {
   CHANGE_MULTIPLOT_COLLECTION,
   CHANGE_MULTIPLOT_GROUP_BY,
   LOAD_MULTIPLOT_COLLECTIONS,
+  TOGGLE_MULTIPLOT_OVERALL_MEAN,
   TOGGLE_MULTIPLOT_THRESHOLD
 } from "./types";
 
@@ -205,6 +206,13 @@ export const toggleAllFieldFilters = (field, active) => (dispatch, getState) => 
   dispatch({
     type: APPLY_MULTIPLOT_FILTER,
     multiplotFilters
+  });
+};
+
+export const toggleOverallMean = (showOverallMean) => (dispatch) => {
+  dispatch({
+    type: TOGGLE_MULTIPLOT_OVERALL_MEAN,
+    multiplotShowOverallMean: showOverallMean
   });
 };
 

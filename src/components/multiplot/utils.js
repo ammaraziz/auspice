@@ -1,7 +1,8 @@
-import { extent, groups } from "d3-array";
+import { extent, groups, mean, deviation } from "d3-array";
 import { axisBottom, axisLeft } from "d3-axis";
 import scaleLinear from "d3-scale/src/linear";
 import { select } from "d3-selection";
+import { symbol, symbolDiamond } from "d3-shape";
 import { NODE_VISIBLE } from "../../util/globals";
 
 
@@ -43,7 +44,8 @@ export const getPlotLayout = (data, width) => {
     subplotHeight: 100,
     subplotPadding: 20,
     circleRadius: 3,
-    circleHoverRadius: 5
+    circleHoverRadius: 5,
+    d3DiamondSize: 25
   };
 
   // Create x scale shared by all subplots
@@ -227,6 +229,35 @@ export const drawMultiplotD3SVG = (ref, dataGroups, plotLayout, xAxisLabel, thre
           setHoverData(null);
         });
 
+    // Calculate overall mean and standard deviation for dataGroup
+    const values = dataGroup.map((d) => d.value);
+    const overallMeanAndStandardDeviation = {
+      mean: mean(values),
+      standardDeviation: deviation(values)
+    };
+
+    const verticalCenter = presets.subplotHeight / 2;
+    const overallMeanAndStandardDeviationGroup = subplot.append("g")
+      .attr("class", "overallMeanAndStandardDeviation")
+      .attr("display", "none")
+      .selectAll("meanAndStandardDeviation")
+      .data([overallMeanAndStandardDeviation])
+      .enter();
+
+    overallMeanAndStandardDeviationGroup.append("path")
+        .attr("class", "mean")
+        .attr("transform", (d) => `translate(${xScale(d.mean)}, ${verticalCenter})`)
+        .attr("d", symbol().type(symbolDiamond).size(presets.d3DiamondSize));
+
+    overallMeanAndStandardDeviationGroup.append("line")
+        .attr("class", "standardDeviation")
+        .attr("x1", (d) => xScale(d.mean - d.standardDeviation))
+        .attr("x2", (d) => xScale(d.mean + d.standardDeviation))
+        .attr("y1", verticalCenter)
+        .attr("y2", verticalCenter)
+        .attr("stroke-width", 2)
+        .attr("stroke", "black");
+
   });
 };
 
@@ -243,6 +274,12 @@ export const getMultiplotTitle = (title, groupByTitle) => {
     panelTitle += ` grouped by ${groupByTitle}`;
   }
   return panelTitle;
+};
+
+export const toggleOverallMean = (ref, showOverallMean) => {
+  select(ref)
+    .selectAll(".overallMeanAndStandardDeviation")
+      .attr("display", showOverallMean ? null : "none");
 };
 
 export const toggleThreshold = (ref, showThreshold) => {

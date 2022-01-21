@@ -7,6 +7,7 @@ import {
   removeAllFieldFilters,
   toggleAllFieldFilters,
   changeMultiplotGroupBy,
+  toggleOverallMean,
   toggleMultiplotThreshold
 } from "../../actions/multiplot";
 import { controlsWidth, truncateString } from "../../util/globals";
@@ -65,6 +66,7 @@ const MultiplotOptions = () => {
   const groupings = useSelector((state) => state.controls.multiplotGroupings);
   const groupBy = useSelector((state) => state.controls.multiplotGroupByKey);
   const filters = useSelector((state) => state.controls.multiplotFilters);
+  const showOverallMean = useSelector((state) => state.controls.multiplotShowOverallMean);
   const showThreshold = useSelector((state) => state.controls.multiplotShowThreshold);
   const threshold = useSelector((state) => state.multiplot.collectionToDisplay.threshold);
   const fieldValues = useSelector((state) => state.multiplot.collectionFieldValues);
@@ -163,6 +165,13 @@ const MultiplotOptions = () => {
           ))}
         </>
       }
+      <Toggle
+        style={{ padding: "10px 0px"}}
+        display
+        on={showOverallMean}
+        label="Show overall mean ± SD"
+        callback={() => dispatch(toggleOverallMean(!showOverallMean))}
+      />
       <Toggle
         display={threshold !== null && threshold !== undefined}
         on={showThreshold}
