@@ -3,7 +3,7 @@ import { NODE_VISIBLE } from "../../../util/globals";
 import { numericToDateObject, prettifyDate } from "../../../util/dateHelpers";
 import { getTraitFromNode } from "../../../util/treeMiscHelpers";
 
-export const updateTipLabels = function updateTipLabels(dt) {
+export const updateTipLabels = function updateTipLabels(alwaysDisplayTipLabels, dt) {
   if ("tipLabels" in this.groups) {
     this.groups.tipLabels.selectAll("*").remove();
   } else {
@@ -19,7 +19,7 @@ export const updateTipLabels = function updateTipLabels(dt) {
   const inViewVisibleTips = inViewTips.filter((d) => d.visibility === NODE_VISIBLE);
 
   /* We show tip labels by checking the number of "inView & visible" tips */
-  if (inViewVisibleTips.length < this.params.tipLabelBreakL1) {
+  if (inViewVisibleTips.length < this.params.tipLabelBreakL1 || alwaysDisplayTipLabels) {
     /* We calculate font size based on the total number of in view tips (both visible & non-visible) */
     let fontSize = this.params.tipLabelFontSizeL1;
     if (inViewTips.length < this.params.tipLabelBreakL3) {

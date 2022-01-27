@@ -23,7 +23,8 @@ const Tree = connect((state) => ({
   canRenderBranchLabels: state.controls.canRenderBranchLabels,
   tipLabelKey: state.controls.tipLabelKey,
   narrativeMode: state.narrative.display,
-  animationPlayPauseButton: state.controls.animationPlayPauseButton
+  animationPlayPauseButton: state.controls.animationPlayPauseButton,
+  alwaysDisplayTipLabels: state.controls.alwaysDisplayTipLabels
 }))(UnconnectedTree);
 
 export default Tree;

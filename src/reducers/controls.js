@@ -87,7 +87,8 @@ export const getDefaultControlsState = () => {
     mapLegendOpen: undefined,
     showOnlyPanels: false,
     showTransmissionLines: true,
-    normalizeFrequencies: true
+    normalizeFrequencies: true,
+    alwaysDisplayTipLabels: false
   };
 };
 
@@ -291,6 +292,10 @@ const Controls = (state = getDefaultControlsState(), action) => {
       }
       return state;
     }
+    case types.ALWAYS_DISPLAY_TIP_LABELS:
+      return Object.assign({}, state, {
+        alwaysDisplayTipLabels: action.value
+      });
     default:
       return state;
   }
